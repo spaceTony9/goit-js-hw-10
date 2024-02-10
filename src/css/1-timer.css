@@ -1,27 +1,22 @@
-body {
-    padding-top: 20px;
-    padding-left: 50px;
-}
 
-input {
+.input {
     display: inline-block;
-    width: 200px;
+    width: 210px;
     height: 40px;
     font-size: 24px;
     vertical-align: middle;
 }
 
-button {
+.timer-button {
     display: inline-block;
     width: 80px;
     height: 46px;
     cursor: pointer;
-
-
 }
 
 .timer {
     margin-top: 30px;
+    margin-bottom: 100px;
     display: flex;
     gap: 20px;
 }

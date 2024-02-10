@@ -3,9 +3,31 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./css/2-snackbar.css" />
     <title>Document</title>
   </head>
   <body>
+    <form class="form">
+      <label class="label-first-child">
+        Delay (ms)
+        <input type="number" name="delay" step="1000" min="0"/>
+      </label>
+
+      <fieldset>
+        <legend>State</legend>
+        <label>
+          <input type="radio" name="state" value="fulfilled" />
+          Fulfilled
+        </label>
+        <label>
+          <input type="radio" name="state" value="rejected"/>
+          Rejected
+        </label>
+      </fieldset>
+
+      <button type="submit">Create notification</button>
+    </form>
+
     <script type="module" src="./js/2-snackbar.js"></script>
   </body>
 </html>
