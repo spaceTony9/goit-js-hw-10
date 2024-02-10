@@ -5,11 +5,14 @@ import izitoast from 'izitoast';
 import 'izitoast/dist/css/iziToast.min.css';
 
 const startButton = document.querySelector('button[data-start]');
+const inputArea = document.querySelector('#datetime-picker');
 const days = document.querySelector('span[data-days');
 const hours = document.querySelector('span[data-hours');
 const minutes = document.querySelector('span[data-minutes');
 const seconds = document.querySelector('span[data-seconds');
-const values = document.querySelectorAll('.value');
+const values = document.querySelectorAll('.value'); // initiated pseudo array from elements with .value class
+
+const SECOND = 1000;
 
 let userSelectedDate = null;
 let currentTime = new Date();
@@ -22,27 +25,62 @@ const options = {
   onClose(selectedDates) {
     selectedDates = selectedDates[0];
     userSelectedDate = selectedDates;
-    if (currentTime.getTime() < selectedDates.getTime()) {
+    if (currentTime.getTime() < selectedDates.getTime()) { // enables start button if chosen date is in the future
       startButton.disabled = false;
-    } else {
+    } else { // disables start button if chosen date is in the past
       startButton.disabled = true;
-      izitoast.show({
+      izitoast.show({ // shhows alert window with message to choose the correct date
         message: 'Please choose a date in the future',
         messageColor: 'white',
         backgroundColor: '#e34234',
         position: 'topRight',
       });
-      //   window.alert('Please choose a date in the future');
     }
   },
 };
 
-flatpickr('#datetime-picker', options);
+flatpickr('#datetime-picker', options); // calls date method
+
+startButton.addEventListener('click', e => {
+  timerCounter();
+  startButton.disabled = true; // disabling start button after timer starts
+  startButton.style.cursor = 'not-allowed';
+  inputArea.disabled = true; // disabling input
+  inputArea.style.cursor = 'not-allowed';
+  
+});
+
+function timerCounter() {
+  const timer = setInterval(() => { // interval to repeat code every second
+    let currentTime = new Date();
+    let timeDifference = userSelectedDate.getTime() - currentTime.getTime();
+
+    let result = convertMs(timeDifference);
+
+    // assigning results from convertMS function to text contects of elements
+    days.textContent = result.days;
+    hours.textContent = result.hours;
+    minutes.textContent = result.minutes;
+    seconds.textContent = result.seconds;
+
+    // checking if the number has 2 digits, if not assigning "0" before each such number
+    values.forEach(child => {
+      child.textContent =
+        child.textContent.length < 2
+          ? '0' + child.textContent
+          : child.textContent;
+    });
+    // checking if the timer came to zero and stopping the interval
+    if (timeDifference <= 1000) {
+      clearInterval(timer);
+    }
+  }, SECOND);
+}
+
 
 function convertMs(ms) {
   // Number of milliseconds per unit of time
-  const second = 1000;
-  const minute = second * 60;
+  const minute = SECOND * 60;
   const hour = minute * 60;
   const day = hour * 24;
 
@@ -53,63 +91,7 @@ function convertMs(ms) {
   // Remaining minutes
   const minutes = Math.floor(((ms % day) % hour) / minute);
   // Remaining seconds
-  const seconds = Math.floor((((ms % day) % hour) % minute) / second);
+  const seconds = Math.floor((((ms % day) % hour) % minute) / SECOND);
 
   return { days, hours, minutes, seconds };
 }
-
-startButton.addEventListener('click', e => {
-  timerCounter();
-});
-
-function timerCounter() {
-  let currentTime = new Date();
-  let timeDifference = userSelectedDate.getTime() - currentTime.getTime();
-  // console.log(timeDifference);
-  let result = convertMs(timeDifference);
-  days.textContent = result.days;
-  hours.textContent = result.hours;
-  minutes.textContent = result.minutes;
-  seconds.textContent = result.seconds;
-  values.forEach(child => {
-    child.textContent =
-      child.textContent.length < 2
-        ? '0' + child.textContent
-        : child.textContent;
-    if (timeDifference > 0) {
-      setTimeout(timerCounter, 1000);
-    } else return 1;
-  });
-}
-
-// setTimeout(() => {
-//   const result = convertMs(timeDifference);
-//   days.textContent = result.days;
-//   hours.textContent = result.hours;
-//   minutes.textContent = result.minutes;
-//   seconds.textContent = result.seconds;
-//   values.forEach(child => {
-//     child.textContent =
-//       child.textContent.length < 2
-//         ? '0' + child.textContent
-//         : child.textContent;
-//   });
-//   //   console.log(days.textContent.padStart(3, '00'));
-// }, 8000);
-
-// const resultKeys = Object.keys(result).map(key =>
-//   key < 10 ? key.padStart(1, '0') : []
-// );
-//   for (let key in result) {
-//     result[key] = result[key] < 10 ? '0' + result[key] : result[key];
-//     console.log(result[key]);
-//   }
-// if (result.days < 10) {
-//     days.textContent = days.textContent.toString().padStart(2, '0');
-//   } else if (result.hours < 10) {
-//     hours.textContent = hours.textContent.toString().padStart(2, '0');
-//   } else if (result.minutes < 10) {
-//     minutes.textContent = minutes.textContent.toString().padStart(2, '0');
-//   } else if (result.seconds < 10) {
-//     seconds.textContent = seconds.textContent.toString().padStart(2, '0');
-//   }
