@@ -12,9 +12,7 @@ const seconds = document.querySelector('span[data-seconds');
 const values = document.querySelectorAll('.value');
 
 let userSelectedDate = null;
-const currentTime = new Date();
-
-let timeDifference = null;
+let currentTime = new Date();
 
 const options = {
   enableTime: true,
@@ -22,17 +20,16 @@ const options = {
   defaultDate: new Date(),
   minuteIncrement: 1,
   onClose(selectedDates) {
-    (selectedDates = selectedDates[0]), userSelectedDate;
+    selectedDates = selectedDates[0];
     userSelectedDate = selectedDates;
     if (currentTime.getTime() < selectedDates.getTime()) {
-      timeDifference = selectedDates.getTime() - currentTime.getTime();
       startButton.disabled = false;
     } else {
       startButton.disabled = true;
       izitoast.show({
         message: 'Please choose a date in the future',
         messageColor: 'white',
-          backgroundColor: '#e34234',
+        backgroundColor: '#e34234',
         position: 'topRight',
       });
       //   window.alert('Please choose a date in the future');
@@ -61,8 +58,15 @@ function convertMs(ms) {
   return { days, hours, minutes, seconds };
 }
 
-setTimeout(() => {
-  const result = convertMs(timeDifference);
+startButton.addEventListener('click', e => {
+  timerCounter();
+});
+
+function timerCounter() {
+  let currentTime = new Date();
+  let timeDifference = userSelectedDate.getTime() - currentTime.getTime();
+  // console.log(timeDifference);
+  let result = convertMs(timeDifference);
   days.textContent = result.days;
   hours.textContent = result.hours;
   minutes.textContent = result.minutes;
@@ -72,9 +76,26 @@ setTimeout(() => {
       child.textContent.length < 2
         ? '0' + child.textContent
         : child.textContent;
+    if (timeDifference > 0) {
+      setTimeout(timerCounter, 1000);
+    } else return 1;
   });
-  //   console.log(days.textContent.padStart(3, '00'));
-}, 8000);
+}
+
+// setTimeout(() => {
+//   const result = convertMs(timeDifference);
+//   days.textContent = result.days;
+//   hours.textContent = result.hours;
+//   minutes.textContent = result.minutes;
+//   seconds.textContent = result.seconds;
+//   values.forEach(child => {
+//     child.textContent =
+//       child.textContent.length < 2
+//         ? '0' + child.textContent
+//         : child.textContent;
+//   });
+//   //   console.log(days.textContent.padStart(3, '00'));
+// }, 8000);
 
 // const resultKeys = Object.keys(result).map(key =>
 //   key < 10 ? key.padStart(1, '0') : []
