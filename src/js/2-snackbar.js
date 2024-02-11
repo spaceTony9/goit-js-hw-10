@@ -1,18 +1,21 @@
 import iziToast from 'izitoast';
 import 'izitoast/dist/css/iziToast.min.css';
 
-const submitBtn = document.querySelector('button');
+const form = document.querySelector('.form');
+const submitBtn = document.querySelector('button[type="submit]"');
 const delayInput = document.querySelector('input[name="delay"]');
 const fulfilledBtn = document.querySelector('input[value="fulfilled"]');
 const rejectedBtn = document.querySelector('input[value="rejected"]');
 
-submitBtn.addEventListener('click', e => {
+form.addEventListener('submit', e => {
   e.preventDefault();
-  if (delayInput.value) { //validation that delay input must be filled 
-    if (fulfilledBtn.checked || rejectedBtn.checked) { //validation on the buttons
+  if (delayInput.value !== '') {
+    // delay input field validation
+    if (fulfilledBtn.checked || rejectedBtn.checked) {
+      //radio buttons validation
       const promise = new Promise((resolve, reject) => {
         setTimeout(() => {
-          if (fulfilledBtn.checked === true) { //checking which radio button was chosen 
+          if (fulfilledBtn.checked === true) {
             resolve(delayInput.value);
           } else {
             reject(delayInput.value);
@@ -20,13 +23,31 @@ submitBtn.addEventListener('click', e => {
         }, delayInput.value);
       });
       promise
-        .then(value => {
-          popUpMessage();
+        .then(fulfilledValue => {
+          iziToast.show({
+            title: '',
+            messageColor: 'white',
+            message: `✅ Fulfilled promise in ${fulfilledValue}ms`,
+            messageSize: '20',
+            backgroundColor: '#3cb371',
+            position: 'topRight',
+            resetOnHover: true,
+            timeout: 3000,
+          });
         })
-        .catch(error => {
-          popUpMessage();
+        .catch(rejectedValue => {
+          iziToast.show({
+            title: '',
+            messageColor: 'white',
+            message: `❌ Rejected promise in ${rejectedValue}ms`,
+            messageSize: '20',
+            backgroundColor: '#cd5c5c',
+            position: 'topRight',
+            timeout: 3000,
+          });
         });
-    } else { // in case none of buttons were checked
+    } else {
+      // radio buttons are not selected
       iziToast.show({
         message: `⚠️ One of the buttons must be checked. Try again!`,
         backgroundColor: 'orange',
@@ -35,7 +56,8 @@ submitBtn.addEventListener('click', e => {
         position: 'topRight',
       });
     }
-  } else { //in case delay field is empty
+  } else {
+    // delay input is empty
     iziToast.show({
       message: `⚠️ Delay field must be filled. Try again!`,
       backgroundColor: 'orange',
@@ -46,24 +68,3 @@ submitBtn.addEventListener('click', e => {
   }
 });
 
-function popUpMessage() { // function to adjuct pop up message for fulfillment and rejection
-  let message = null;
-  let backgroundColor = null;
-  if (fulfilledBtn.checked === true) {
-    message = `✅ Fulfilled promise in ${delayInput.value}ms`;
-    backgroundColor = '#3cb371';
-  } else {
-    message = `❌ Rejected promise in ${delayInput.value}ms`;
-    backgroundColor = '#cd5c5c';
-  }
-  iziToast.show({ // adjusted settings for pop up message for rejection or fulfillment
-    title: '',
-    messageColor: 'white',
-    message: message,
-    messageSize: '20',
-    backgroundColor: backgroundColor,
-    position: 'topRight',
-    resetOnHover: true,
-    timeout: 3000,
-  });
-}

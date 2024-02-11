@@ -6,10 +6,10 @@ import 'izitoast/dist/css/iziToast.min.css';
 
 const startButton = document.querySelector('button[data-start]');
 const inputArea = document.querySelector('#datetime-picker');
-const days = document.querySelector('span[data-days');
-const hours = document.querySelector('span[data-hours');
-const minutes = document.querySelector('span[data-minutes');
-const seconds = document.querySelector('span[data-seconds');
+const days = document.querySelector('span[data-days]');
+const hours = document.querySelector('span[data-hours]');
+const minutes = document.querySelector('span[data-minutes]');
+const seconds = document.querySelector('span[data-seconds]');
 const values = document.querySelectorAll('.value'); // initiated pseudo array from elements with .value class
 
 const SECOND = 1000;
